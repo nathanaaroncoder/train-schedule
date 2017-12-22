@@ -34,11 +34,43 @@ $(document).ready(function() {
 
       firstTrain = $("#first-train-time").val().trim();
       frequency = $("#frequency-input").val().trim();
-      tFrequency = parseInt(frequency);
 
-      console.log("The frequency here: " + tFrequency);
 
-      var firstTimeConverted = moment(firstTrain, "hh:mm").subtract(tFrequency, "days");
+
+      console.log("Name: " + name);
+      
+      
+      // console.log("next train time: " + nextTrainTime);
+
+      // Code for handling the push
+      database.ref().push({
+        name: name,
+        destination: destination,
+        frequency: frequency,
+        firstTrain: firstTrain,
+
+      });
+
+      $("#train-name").val("");
+      $("#destination-input").val("");
+      $("#first-train-time").val("");
+      $("#frequency-input").val("");
+
+    
+
+    });
+
+    // Firebase watcher + initial loader + order/limit HINT: .on("child_added"
+     database.ref().on("child_added", function(childSnapshot) {
+
+      console.log("frequency: " + childSnapshot.val().frequency);
+
+      var tFrequency = childSnapshot.val().frequency;
+      var firstTrainDatabase = childSnapshot.val().firstTrain;
+
+      console.log("firstTrainDatabase: " + firstTrainDatabase);
+
+      var firstTimeConverted = moment(firstTrainDatabase, "hh:mm").subtract(tFrequency, "days");
       console.log(firstTimeConverted);
 
       var currentTime = moment();
@@ -62,58 +94,17 @@ $(document).ready(function() {
     nextTrainTime = moment(nextTrain).format("hh:mm");
 
 
-
-      console.log("Name: " + name);
-      
-      
-      console.log("next train time: " + nextTrainTime);
-
-      // Code for handling the push
-      database.ref().push({
-        name: name,
-        destination: destination,
-        frequency: frequency,
-        nextTrainTime: nextTrainTime,
-        tMinutesTillTrain: tMinutesTillTrain
-        // dateAdded: firebase.database.ServerValue.TIMESTAMP
-      });
-
-      console.log("Name: " + name);
-      console.log("destination: " + destination);
-      console.log("next Train: " + nextTrainTime);
-
-    });
-
-    // Firebase watcher + initial loader + order/limit HINT: .on("child_added"
-     database.ref().on("child_added", function(childSnapshot) {
-
-      // Log everything that's coming out of snapshot
-      console.log(childSnapshot.val().name);
-      console.log(childSnapshot.val().destination);
-      console.log(childSnapshot.val().nextTrainTime);
-      console.log(childSnapshot.val().tFrequency);
-      // console.log(childSnapshot.val().joinDate);
-
-      // full list of items to the well
       $("#current-schedule").append("<tr><td id='name'> " + childSnapshot.val().name +
         " </td><td id='destination'> " + childSnapshot.val().destination +
         " </td><td id='frequency'> " + childSnapshot.val().frequency +
-        " </td><td id='nextTrainTime'> " + childSnapshot.val().nextTrainTime + 
-        " </td><td>" + childSnapshot.val().tMinutesTillTrain + "</td></tr>");
+        " </td><td id='nextTrainTime'> " + nextTrainTime + 
+        " </td><td>" + tMinutesTillTrain + "</td></tr>");
 
     // Handle the errors
     }, function(errorObject) {
       console.log("Errors handled: " + errorObject.code);
     });
 
-    // dataRef.ref().orderByChild("dateAdded").limitToLast(1).on("child_added", function(snapshot) {
-
-    //   // Change the HTML to reflect
-    //   $("#name").text(snapshot.val().name);
-    //   $("#destination").text(snapshot.val().email);
-    //   $("#firstTrain").text(snapshot.val().age);
-    //   $("#frequency").text(snapshot.val().comment);
-    // });
 
 
 
