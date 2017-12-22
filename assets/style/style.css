@@ -1,0 +1,24 @@
+body{
+	font-family: 'Quicksand', sans-serif;
+	background-color: lightblue;
+}
+
+.jumbotron {
+	text-align: center;
+	background-color: lightgreen;
+
+}
+
+th{
+	font-weight: 900;
+	font-size: 20px;
+}
+
+.panelHeader{
+	background-color: lightgreen;
+	padding: 10px;
+}
+
+.panel-body {
+	background-color: lightblue;
+}
